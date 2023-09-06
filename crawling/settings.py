@@ -85,7 +85,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         'NAME': 'sieum',
-        'USER': 'root',
+        'USER': 'ssafy',
         'PASSWORD': 'ssafy',
         'HOST': 'localhost',
         'PORT': '3306',
