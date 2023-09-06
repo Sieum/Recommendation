@@ -11,9 +11,10 @@ import pprint
 import pandas as pd
 # from models import Music
 # from serializers import MusicSerializer
+from decouple import config
 
-cid = 'eead00e8318343b9ad35cb2ae145e047'
-secret = '9987a67355c74bb1b8da7515782ae4a2'
+cid = config('SPOTIFY_ID')
+secret = config('SPOTYFY_SECRET')
 client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
 
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
