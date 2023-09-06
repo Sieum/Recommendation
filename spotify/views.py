@@ -9,8 +9,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pprint
 import pandas as pd
-from models import Music
-from serializers import MusicSerializer
+# from models import Music
+# from serializers import MusicSerializer
 
 cid = 'eead00e8318343b9ad35cb2ae145e047'
 secret = '9987a67355c74bb1b8da7515782ae4a2'
@@ -43,5 +43,5 @@ def music(request):
     # pprint.pprint(track_df.head())
 
     pprint.pprint(track_df)
-    serializer = MusicSerializer()
+    # serializer = MusicSerializer()
     return Response(status=http.HTTP_200_OK)
