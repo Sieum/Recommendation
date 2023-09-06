@@ -6,7 +6,7 @@
 >
 >$ pipenv shell    // 가상환경 실행
 >
->$ pipenv install django   // 장고 설치
+>$ pipenv install django==4.1   // 장고 설치 (반드시 4.1 이하버젼 깔아야함, 4.2이상부터는 mysql 버젼 8 이상만 지원
 > 
 >$ pip freeze   // 장고가 설치되었는지 확인하는 명령어
 > 
