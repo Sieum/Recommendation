@@ -19,6 +19,7 @@ def music_crawl():
     track_popularity = []
     artist_id = []
     track_id = []
+    track_features = []
     for i in range(0, 1, ):
         track_results = sp.search(q='year:2021', type='track', limit=50, offset=i)
         for i, t in enumerate(track_results['tracks']['items']):
@@ -31,7 +32,7 @@ def music_crawl():
     track_df = pd.DataFrame({'artist_name': artist_name, 'track_name': track_name, 'track_id': track_id,
                              'track_popularity': track_popularity, 'artist_id': artist_id})
 
-    track_features = []
+
     for t_id in track_df['track_id']:
         af = sp.audio_features(t_id)
         track_features.append(af)
@@ -44,3 +45,4 @@ def music_crawl():
             tf_df = tf_df.append(feat, ignore_index=True)
     tf_df.head()
     pprint.pprint(track_df)
+    pprint.pprint(tf_df)
