@@ -23,3 +23,6 @@ class Music(models.Model):
     uri = models.CharField(null=True, max_length=255)
     valence = models.FloatField(null=True)
 
+    class Meta:
+        db_table = u'Music'
+

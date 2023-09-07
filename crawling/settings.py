@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,14 +80,12 @@ WSGI_APPLICATION = "crawling.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         'NAME': 'sieum',
-        'USER': 'ssafy',
-        'PASSWORD': 'ssafy',
+        'USER': config('DB_ID'),
+        'PASSWORD': config('DB_PWD'),
         'HOST': 'localhost',
         'PORT': '3306',
     }
