@@ -6,6 +6,8 @@ pd.set_option('display.max_columns', None)  ## 모든 열을 출력한다.
 # df = pd.read_csv('./data.csv')
 from decouple import config
 
+from sklearn.preprocessing import MinMaxScaler
+
 cid = config('SPOTIFY_ID')
 secret = config('SPOTYFY_SECRET')
 client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
@@ -33,15 +35,52 @@ def music_crawl():
     track_df = pd.DataFrame({'artist_name': artist_name, 'track_name': track_name, 'track_id': track_id,
                              'track_popularity': track_popularity, 'artist_id': artist_id})
 
+    acousticness = []
+    danceability = []
+    energy = []
+    instrumentalness = []
+    key = []
+    liveness = []
+    loudness = []
+    mode = []
+    tempo = []
+    time_signature = []
+    valence = []
+    speechiness = []
 
     for t_id in track_df['track_id']:
         af = sp.audio_features(t_id)
         track_features.append(af)
-    tf_df = pd.DataFrame(
-        columns=['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness',
-                 'liveness', 'valence', 'tempo', 'type', 'id', 'url', 'track_href', 'analysis_url', 'duration_ms',
-                 'time_signature'])
-    for item in track_features:
-        for feat in item:
-            tf_df = tf_df.append(feat, ignore_index=True)
+
+        acousticness.append(af[0]['acousticness'])
+        danceability.append(af[0]['danceability'])
+        energy.append(af[0]['energy'])
+        instrumentalness.append(af[0]['instrumentalness'])
+        key.append(af[0]['key'])
+        liveness.append(af[0]['liveness'])
+        loudness.append(af[0]['loudness'])
+        mode.append(af[0]['mode'])
+        tempo.append(af[0]['tempo'])
+        time_signature.append(af[0]['time_signature'])
+        valence.append(af[0]['valence'])
+        speechiness.append(af[0]['speechiness'])
+
+    tf_df = pd.DataFrame({'acousticness': acousticness, 'danceability': danceability, 'energy': energy,
+                          'instrumentalness': instrumentalness, 'key': key, 'liveness': liveness, 'loudness': loudness,
+                          'mode': mode, 'tempo': tempo, 'time_signature': time_signature, 'valence': valence, 'speechiness': speechiness})
+
+    # tf_df.drop(tf_df.index, inplace=True)
+
+    # for item in track_features:
+    #     for feat in item:
+    #         tf_df = tf_df.append(feat, ignore_index=True)
+
+    scaler = MinMaxScaler()
+    scaler.fit(tf_df)
+    tf_scaled = scaler.transform(tf_df)
+    df_tf_scaled = pd.DataFrame(data=tf_scaled,
+                                columns=['acousticness', 'danceability', 'energy', 'instrumentalness', 'key',
+                                         'liveness', 'loudness', 'mode', 'tempo',
+                                         'time_signature', 'valence', 'speechiness'])
+    print(df_tf_scaled)
     return track_features

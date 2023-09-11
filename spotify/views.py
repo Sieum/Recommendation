@@ -18,17 +18,17 @@ import rest_framework.status as http
 @api_view(['GET'])
 def music(request):
     track_features = spotify_crawl.music_crawl()
+    # # for track_feature in track_features:
+    # #     if track_feature[0]['speechiness'] >= 0.66:
+    # #         continue
+    # #     else:
+    # #         print(track_feature[0]['speechiness'])
+    # Music.objects.filter()
     # for track_feature in track_features:
     #     if track_feature[0]['speechiness'] >= 0.66:
     #         continue
     #     else:
-    #         print(track_feature[0]['speechiness'])
-    Music.objects.filter()
-    for track_feature in track_features:
-        if track_feature[0]['speechiness'] >= 0.66:
-            continue
-        else:
-            serializer = MusicSerializer(data=track_feature[0])
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
+    #         serializer = MusicSerializer(data=track_feature[0])
+    #         if serializer.is_valid(raise_exception=True):
+    #             serializer.save()
     return Response(status=http.HTTP_200_OK)
