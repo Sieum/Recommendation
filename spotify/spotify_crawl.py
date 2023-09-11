@@ -4,9 +4,10 @@ import pprint
 import pandas as pd
 pd.set_option('display.max_columns', None)  ## 모든 열을 출력한다.
 # df = pd.read_csv('./data.csv')
+from decouple import config
 
-cid = 'eead00e8318343b9ad35cb2ae145e047'
-secret = '9987a67355c74bb1b8da7515782ae4a2'
+cid = config('SPOTIFY_ID')
+secret = config('SPOTYFY_SECRET')
 client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
 
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -43,6 +44,4 @@ def music_crawl():
     for item in track_features:
         for feat in item:
             tf_df = tf_df.append(feat, ignore_index=True)
-    tf_df.head()
-    pprint.pprint(track_df)
-    pprint.pprint(tf_df)
+    return track_features
