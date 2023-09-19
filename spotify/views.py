@@ -4,7 +4,6 @@ import pandas as pd
 
 from spotify import spotify_crawl
 from .models import Music
-from spotify import recommend
 from .serializers import MusicSerializer
 import pandas as pd
 
