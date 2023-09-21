@@ -154,9 +154,11 @@ def recommend_music():
                    'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'popularity', 'speechiness', 'tempo']
 
     def get_song_data(song):
-
         try:
             song_data=Music.objects(name=song['name']).first()
+            if song_data==None:
+                raise IndexError()
+
             song_data_dict = {
                 'name': song_data['name'],
                 'artists': song_data['artists'],
@@ -183,7 +185,13 @@ def recommend_music():
             return pd.DataFrame([song_data_dict])
 
         except IndexError:
-            return find_song(song['name'])
+            song_data=find_song(song['name'])
+            if song_data==None:
+                return None
+            song_data_dict=song_data.to_dict()
+            save_song_data=Music(**song_data_dict)
+            save_song_data.save()
+            return song_data
 
     def get_mean_vector(song_list):
 
@@ -228,9 +236,9 @@ def recommend_music():
         rec_songs = rec_songs[~rec_songs['name'].isin(song_dict['name'])]
         return rec_songs[metadata_cols].to_dict(orient='records')
 
-    song_list = [{'name': 'Spring Day'},
-                 {'name': 'Dynamite'},
-                 {'name': 'Boy in Luv'},
+    song_list = [{'name': 'TROUBLESHOOTER'},
+                 {'name': 'AD MARE'},
+                 {'name': 'DOUBLAST'},
                  {'name': 'Like'},
                  {'name': 'Euphoria'}]
 
