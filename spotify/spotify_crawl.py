@@ -28,6 +28,9 @@ from scipy.spatial.distance import cdist
 from collections import defaultdict
 import difflib
 
+from spotify.models import Music
+
+
 ## 데이터
 data_path = os.path.join(DATA_DIR, 'data.csv')
 genre_path = os.path.join(DATA_DIR, 'data_by_genres.csv')
@@ -153,7 +156,9 @@ def recommend_music():
     def get_song_data(song, spotify_data):
 
         try:
+            data=Music.objects(name=song['name']).first()
             song_data = spotify_data[(spotify_data['name'] == song['name'])].iloc[0]
+
             return song_data
 
         except IndexError:

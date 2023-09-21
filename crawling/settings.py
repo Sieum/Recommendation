@@ -12,11 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import mongoengine
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATA_DIR = "C:\\Users\\user\\Desktop"
+DATA_DIR = "C:\\Users\\SSAFY\\Desktop"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "spotify",
-    "rest_framework"
+    "rest_framework",
+    "mongoengine"
 ]
 
 #언어를 한국어로 변경해준다.
@@ -83,14 +85,21 @@ WSGI_APPLICATION = "crawling.wsgi.application"
 # Database
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "djongo",
         'NAME': 'sieum',
         'USER': config('DB_ID'),
         'PASSWORD': config('DB_PWD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
+        'HOST': 'j9a605.p.ssafy.io',
+        'PORT': '27017',
+    },
 }
+mongoengine.connect(
+    db='sieum',
+    host='mongodb://j9a605.p.ssafy.io:27017/', # 원격 MongoDB 서버 주소와 포트
+   username=config('DB_ID'),  # 사용자 이름 (선택적)
+   password=config('DB_PWD'),
+)
+
 
 
 # Password validation
