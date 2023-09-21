@@ -153,23 +153,44 @@ def recommend_music():
     number_cols = ['valence', 'year', 'acousticness', 'danceability', 'duration_ms', 'energy', 'explicit',
                    'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'popularity', 'speechiness', 'tempo']
 
-    def get_song_data(song, spotify_data):
+    def get_song_data(song):
 
         try:
-            data=Music.objects(name=song['name']).first()
-            song_data = spotify_data[(spotify_data['name'] == song['name'])].iloc[0]
+            song_data=Music.objects(name=song['name']).first()
+            song_data_dict = {
+                'name': song_data['name'],
+                'artists': song_data['artists'],
+                'explicit': song_data['explicit'],
+                'duration_ms': song_data['duration_ms'],
+                'popularity': song_data['popularity'],
+                'valence': song_data['valence'],
+                'year': song_data['year'],
+                'acousticness': song_data['acousticness'],
+                'danceability': song_data['danceability'],
+                'duration_ms': song_data['duration_ms'],
+                'energy': song_data['energy'],
+                'instrumentalness': song_data['instrumentalness'],
+                'key': song_data['key'],
+                'liveness': song_data['liveness'],
+                'loudness': song_data['loudness'],
+                'mode': song_data['mode'],
+                'popularity': song_data['popularity'],
+                'speechiness': song_data['speechiness'],
+                'tempo': song_data['tempo']
+                # 다른 필드도 필요한 만큼 추가
+            }
 
-            return song_data
+            return pd.DataFrame([song_data_dict])
 
         except IndexError:
             return find_song(song['name'])
 
-    def get_mean_vector(song_list, spotify_data):
+    def get_mean_vector(song_list):
 
         song_vectors = []
 
         for song in song_list:
-            song_data = get_song_data(song, spotify_data)
+            song_data = get_song_data(song)
             if song_data is None:
                 print('Warning: {} does not exist in Spotify or in database'.format(song['name']))
                 continue
@@ -196,7 +217,7 @@ def recommend_music():
         metadata_cols = ['name', 'artists']
         song_dict = flatten_dict_list(song_list)
 
-        song_center = get_mean_vector(song_list, spotify_data)
+        song_center = get_mean_vector(song_list)
         scaler = song_cluster_pipeline.steps[0][1]
         scaled_data = scaler.transform(spotify_data[number_cols])
         scaled_song_center = scaler.transform(song_center.reshape(1, -1))
