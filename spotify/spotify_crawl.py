@@ -45,7 +45,7 @@ cid = config('SPOTIFY_ID')
 secret = config('SPOTYFY_SECRET')
 client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
 
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+sp = spotipy.Spotify(auth_manager=client_credentials_manager)
 
 ## KMeans 군집화
 song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
@@ -139,7 +139,9 @@ def recommend_music():
         results = results['tracks']['items'][0]
         track_id = results['id']
         audio_features = sp.audio_features(track_id)[0]
-
+        song_data['artists'] = [results['artists'][0]['name']]
+        song_data['release_date'] = [results['album']['release_date']]
+        song_data['year'] = [int(results['album']['release_date'].split('-')[0])]
         song_data['name'] = [name]
         song_data['explicit'] = [int(results['explicit'])]
         song_data['duration_ms'] = [results['duration_ms']]
@@ -157,8 +159,7 @@ def recommend_music():
         try:
             song_data=Music.objects(name=song['name']).first()
             if song_data==None:
-                raise IndexError()
-
+                raise Exception()
             song_data_dict = {
                 'name': song_data['name'],
                 'artists': song_data['artists'],
@@ -184,12 +185,33 @@ def recommend_music():
 
             return pd.DataFrame([song_data_dict])
 
-        except IndexError:
+        except Exception as e:
             song_data=find_song(song['name'])
-            if song_data==None:
-                return None
+            if song_data is None or song_data.empty:
+                return song_data
+            artists_list=song_data['artists'].tolist()
             song_data_dict=song_data.to_dict()
-            save_song_data=Music(**song_data_dict)
+            save_song_data=Music(
+                name=song_data_dict['name'][0],
+                explicit=song_data_dict['explicit'][0],
+                duration_ms=song_data_dict['duration_ms'][0],
+                popularity=song_data_dict['popularity'][0],
+                danceability=song_data_dict['danceability'][0],
+                energy=song_data_dict['energy'][0],
+                key=song_data_dict['key'][0],
+                loudness=song_data_dict['loudness'][0],
+                mode=song_data_dict['mode'][0],
+                speechiness=song_data_dict['speechiness'][0],
+                acousticness=song_data_dict['acousticness'][0],
+                instrumentalness=song_data_dict['instrumentalness'][0],
+                liveness=song_data_dict['liveness'][0],
+                valence=song_data_dict['valence'][0],
+                tempo=song_data_dict['tempo'][0],
+                id=song_data_dict['id'][0],
+                release_date=song_data_dict['release_date'][0],
+                year=song_data_dict['year'][0],
+                artists=artists_list
+            )
             save_song_data.save()
             return song_data
 
@@ -204,7 +226,6 @@ def recommend_music():
                 continue
             song_vector = song_data[number_cols].values
             song_vectors.append(song_vector)
-
         song_matrix = np.array(list(song_vectors))
         return np.mean(song_matrix, axis=0)
 
