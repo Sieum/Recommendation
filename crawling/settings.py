@@ -17,7 +17,7 @@ import mongoengine
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATA_DIR = "C:\\Users\\SSAFY\\Desktop"
+DATA_DIR = "C:\\Users\\user\\Desktop"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -85,20 +85,14 @@ WSGI_APPLICATION = "crawling.wsgi.application"
 # Database
 DATABASES = {
     "default": {
-        "ENGINE": "djongo",
+        "ENGINE": "django.db.backends.mysql",
         'NAME': 'sieum',
         'USER': config('DB_ID'),
         'PASSWORD': config('DB_PWD'),
-        'HOST': 'j9a605.p.ssafy.io',
-        'PORT': '27017',
-    },
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
 }
-mongoengine.connect(
-    db='sieum',
-    host='mongodb://j9a605.p.ssafy.io:27017/', # 원격 MongoDB 서버 주소와 포트
-   username=config('DB_ID'),  # 사용자 이름 (선택적)
-   password=config('DB_PWD'),
-)
 
 
 

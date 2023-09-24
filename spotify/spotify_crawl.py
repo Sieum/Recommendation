@@ -10,6 +10,8 @@ import os
 import warnings
 warnings.filterwarnings("ignore")
 
+import time
+
 import numpy as np
 import seaborn as sns
 import plotly.express as px
@@ -59,27 +61,32 @@ song_cluster_pipeline.fit(X)
 
 def music_crawl():
     # 2021 노래 검색
-    artist_name = []
-    track_name = []
-    artist_id = []
-    track_id = []
+    artists = []
+    name = []
+    id = []
     year = []
-    genre = []
+    release_date = []
     track_features = []
-    for i in range(0, 1, ):
-        track_results = sp.search(q='year:2023', type='track', limit=5, offset=i)
+    music_info_list = []
+    for i in range(18, 20, ):
+        time.sleep(0.5)
+        track_results = sp.search(q='year:2019 genre:k-pop', type='track', market= "KR", limit=50, offset=i*50)
+        print("검색 지나가는 중~~~~~~~~~~~~~~~~~~~~~~")
         for i, t in enumerate(track_results['tracks']['items']):
-            artist_name.append(t['artists'][0]['name'])
-            artist_id.append(t['artists'][0]['id'])
-            track_name.append(t['name'])
-            track_id.append(t['id'])
+            artists.append(t['artists'][0]['name'])
+            name.append(t['name'])
+            print(name)
+            id.append(t['id'])
+            release_date.append((t['album']['release_date']))
             year.append(t['album']['release_date'].split('-')[0])
 
-    track_df = pd.DataFrame({'artist_name': artist_name, 'track_name': track_name, 'track_id': track_id,
-                             'artist_id': artist_id, 'year': year})
+
+    track_df = pd.DataFrame({'artists': artists, 'name': name, 'id': id,
+                             'release_date': release_date, 'year': year})
 
     acousticness = []
     danceability = []
+    duration_ms = []
     energy = []
     instrumentalness = []
     key = []
@@ -89,13 +96,18 @@ def music_crawl():
     tempo = []
     valence = []
     speechiness = []
+    popularity = []
+    explicit = []
 
-    for t_id in track_df['track_id']:
+    for t_id in track_df['id']:
+        time.sleep(0.5)
         af = sp.audio_features(t_id)
+        print("음악특성 지나가는 중~~~~~~~~~~~~~~~~~~~~~~")
         track_features.append(af)
 
         acousticness.append(af[0]['acousticness'])
         danceability.append(af[0]['danceability'])
+        duration_ms.append(af[0]['duration_ms'])
         energy.append(af[0]['energy'])
         instrumentalness.append(af[0]['instrumentalness'])
         key.append(af[0]['key'])
@@ -106,25 +118,42 @@ def music_crawl():
         valence.append(af[0]['valence'])
         speechiness.append(af[0]['speechiness'])
 
-    tf_df = pd.DataFrame({'track_id': track_id, 'track_name': track_name, 'artist_id': artist_id, 'artist_name': artist_name,
-                          'year': year, 'acousticness': acousticness, 'danceability': danceability, 'energy': energy,
+        tf = sp.track(t_id)
+        popularity.append(tf['popularity'])
+        explicit.append(tf['explicit'])
+
+    tf_df = pd.DataFrame({'id': id, 'name': name, 'artists': artists, 'release_date': release_date,
+                          'year': year, 'acousticness': acousticness, 'danceability': danceability, 'duration_ms': duration_ms, 'energy': energy,
                           'instrumentalness': instrumentalness, 'key': key, 'liveness': liveness, 'loudness': loudness,
-                          'mode': mode, 'tempo': tempo, 'valence': valence, 'speechiness': speechiness})
+                          'mode': mode, 'tempo': tempo, 'valence': valence, 'speechiness': speechiness, 'popularity': popularity, 'explicit': explicit})
 
-    # tf_df.drop(tf_df.index, inplace=True)
+    for i in range(len(track_df)):
+        print("객체 만드는 중~~~~~~~~~~~~~~~~~~")
+        music_info = Music(
+            valence=valence[i],
+            year=year[i],
+            acousticness=acousticness[i],
+            artists=artists[i],
+            danceability=danceability[i],
+            duration_ms=duration_ms[i],
+            energy=energy[i],
+            explicit=explicit[i],
+            id=id[i],
+            instrumentalness=instrumentalness[i],
+            key=key[i],
+            liveness=liveness[i],
+            loudness=loudness[i],
+            mode=mode[i],
+            name=name[i],
+            popularity=popularity[i],
+            release_date=release_date[i],
+            speechiness=speechiness[i],
+            tempo=tempo[i]
+        )
+        music_info_list.append(music_info)
+    return music_info_list
 
-    # for item in track_features:
-    #     for feat in item:
-    #         tf_df = tf_df.append(feat, ignore_index=True)
-
-    # scaler = MinMaxScaler()
-    # scaler.fit(tf_df)
-    # tf_scaled = scaler.transform(tf_df)
-    # df_tf_scaled = pd.DataFrame(data=tf_scaled,
-    #                             columns=['acousticness', 'danceability', 'energy', 'instrumentalness', 'key',
-    #                                      'liveness', 'loudness', 'mode', 'tempo',
-    #                                      'time_signature', 'valence', 'speechiness'])
-    # print(tf_df)
+    print(tf_df)
     return track_features
 
 

@@ -20,5 +20,6 @@ from spotify import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('music', views.music)
+    path('music', views.music),
+    path('crawling', views.crawling)
 ]

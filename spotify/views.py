@@ -6,6 +6,7 @@ from spotify import spotify_crawl
 from .models import Music
 from .serializers import MusicSerializer
 import pandas as pd
+from django.forms.models import model_to_dict
 
 pd.set_option('display.max_columns', None)  ## 모든 열을 출력한다.
 # df = pd.read_csv('./data.csv')
@@ -43,4 +44,19 @@ def music(request):
     #         serializer = MusicSerializer(data=track_feature[0])
     #         if serializer.is_valid(raise_exception=True):
     #             serializer.save()
+    return Response(status=http.HTTP_200_OK)
+
+@api_view(['GET'])
+def crawling(request):
+    music_info_list = spotify_crawl.music_crawl()
+    for music_info in music_info_list:
+        music_dict = model_to_dict(music_info)
+        serializer = MusicSerializer(data=music_dict)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except:
+                print(music_dict)
+        else:
+            print(serializer.errors)
     return Response(status=http.HTTP_200_OK)
