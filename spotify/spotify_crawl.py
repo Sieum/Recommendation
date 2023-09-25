@@ -37,10 +37,12 @@ from spotify.models import Music
 data_path = os.path.join(DATA_DIR, 'data.csv')
 genre_path = os.path.join(DATA_DIR, 'data_by_genres.csv')
 year_path = os.path.join(DATA_DIR, 'data_by_year.csv')
+data_genre_path = os.path.join(DATA_DIR, 'data_w_genres.csv')
 
 data = pd.read_csv(data_path)
 genre_data = pd.read_csv(genre_path)
 year_data = pd.read_csv(year_path)
+data_w_genre_data = pd.read_csv(data_genre_path)
 
 ## 스포티파이 개발자 로그인
 cid = config('SPOTIFY_ID')
@@ -68,9 +70,9 @@ def music_crawl():
     release_date = []
     track_features = []
     music_info_list = []
-    for i in range(18, 20, ):
+    for i in range(0, 2, ):
         time.sleep(0.5)
-        track_results = sp.search(q='year:2019 genre:k-pop', type='track', market= "KR", limit=50, offset=i*50)
+        track_results = sp.search(q='year:2018 genre:k-pop', type='track', market= "KR", limit=50, offset=i*50)
         print("검색 지나가는 중~~~~~~~~~~~~~~~~~~~~~~")
         for i, t in enumerate(track_results['tracks']['items']):
             artists.append(t['artists'][0]['name'])
@@ -296,3 +298,24 @@ def recommend_music():
 
     return music_list
 
+import random
+
+def recommend_by_genre(genre_list):
+    recommended_music_list = []
+    for genre in genre_list:
+        matching_artists = data_w_genre_data[data_w_genre_data['genres'].str.contains(genre, case=False, na=False)]
+            
+        if not matching_artists.empty:
+
+            random_artist = matching_artists.sample().iloc[0]['artists']
+
+            matching_music = data[data['artists'].apply(lambda x: random_artist in x)]
+
+            if not matching_music.empty:
+
+                random_music = matching_music.sample().iloc[0]
+                recommended_music_list.append(random_music)
+
+                # print(f"음악 제목: {random_music['name']}, 아티스트: {random_music['artists']}")
+
+    return recommended_music_list

@@ -60,3 +60,12 @@ def crawling(request):
         else:
             print(serializer.errors)
     return Response(status=http.HTTP_200_OK)
+
+@api_view(['GET'])
+def genre_music(request):
+    genre_list = ['k-pop', 'k-pop girl group', 'k-pop boy group']
+    music_list = spotify_crawl.recommend_by_genre(genre_list)
+    print(music_list)
+    for music in music_list:
+        print(f"음악 제목: {music['name']}, 아티스트: {music['artists']}")
+    return Response(status=http.HTTP_200_OK)
