@@ -16,12 +16,15 @@ import rest_framework.status as http
 
 @api_view(['GET'])
 def genre(request):
-    genre_list = ["k-pop", "k-pop girl group", "k-pop boy group"]
-    recommended_music = spotify_crawl.recommend_by_genre(genre_list)
-    for music in recommended_music:
-        print(f"음악 제목: {music['name']}, 아티스트: {music['artists']}")
-    recommended_music_ids = []
-    for music in recommended_music:
-        recommended_music_ids.append({music['id']})
-        print({music['id']})
-    return Response(recommended_music_ids, status=status.HTTP_200_OK)
+    # genre_list = ["k-pop", "k-pop girl group", "k-pop boy group"]
+    if request.method == 'GET':
+        genre_list = request.GET.getlist('genres', [])
+
+        recommended_music = spotify_crawl.recommend_by_genre(genre_list)
+        for music in recommended_music:
+            print(f"음악 제목: {music['name']}, 아티스트: {music['artists']}")
+        recommended_music_ids = []
+        for music in recommended_music:
+            recommended_music_ids.append({music['id']})
+            print({music['id']})
+        return Response(recommended_music_ids, status=status.HTTP_200_OK)
