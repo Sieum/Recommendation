@@ -39,14 +39,20 @@ from spotify.models import Music
 
 import pymongo
 import random
+from django.conf import settings
 
 ####
 
 ## 데이터
-data_path = os.path.join(DATA_DIR, 'data.csv')
-genre_path = os.path.join(DATA_DIR, 'data_by_genres.csv')
-year_path = os.path.join(DATA_DIR, 'data_by_year.csv')
-data_genre_path = os.path.join(DATA_DIR, 'data_w_genres.csv')
+# data_path = os.path.join(DATA_DIR, 'data.csv')
+# genre_path = os.path.join(DATA_DIR, 'data_by_genres.csv')
+# year_path = os.path.join(DATA_DIR, 'data_by_year.csv')
+# data_genre_path = os.path.join(DATA_DIR, 'data_w_genres.csv')
+
+data_path = os.path.join(settings.STATICFILES_DIRS[0], 'data.csv')
+genre_path = os.path.join(settings.STATICFILES_DIRS[0], 'data_by_genres.csv')
+year_path = os.path.join(settings.STATICFILES_DIRS[0], 'data_by_year.csv')
+data_genre_path = os.path.join(settings.STATICFILES_DIRS[0], 'data_w_genres.csv')
 
 data = pd.read_csv(data_path)
 genre_data = pd.read_csv(genre_path)

@@ -18,8 +18,8 @@ import rest_framework.status as http
 def genre(request):
     
     if request.method == 'GET':
-        # genre_list = request.GET.getlist('genres', [])
-        genre_list = ["k-pop", "k-pop girl group", "k-pop boy group"]
+        genre_list = request.GET.getlist('genres', [])
+        # genre_list = ["k-pop", "k-pop girl group", "k-pop boy group"]
         recommended_music = spotify_crawl.recommend_by_genre(genre_list)
         for music in recommended_music:
             print(f"음악 제목: {music['name']}, 아티스트: {music['artists']}")
