@@ -28,3 +28,9 @@ def genre(request):
             recommended_music_ids.append({music['id']})
             print({music['id']})
         return Response(recommended_music_ids, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def music(request):
+    music_list = spotify_crawl.recommend_music();
+    return Response(music_list, status=http.HTTP_200_OK)
