@@ -32,5 +32,11 @@ def genre(request):
 
 @api_view(['GET'])
 def music(request):
-    music_list = spotify_crawl.recommend_music();
+    # song_list = request.POST.getlist('song_list[]')
+    song_list = [{'name': 'TROUBLESHOOTER'},
+                 {'name': 'AD MARE'},
+                 {'name': 'DOUBLAST'},
+                 {'name': 'Like'},
+                 {'name': 'Euphoria'}]
+    music_list = spotify_crawl.recommend_music(song_list)
     return Response(music_list, status=http.HTTP_200_OK)

@@ -102,7 +102,7 @@ def recommend_by_genre(genre_list):
 
 ####
 
-def recommend_music():
+def recommend_music(song_list):
 
     def find_song(name):
         song_data = defaultdict()
@@ -154,7 +154,6 @@ def recommend_music():
                 'popularity': song_data['popularity'],
                 'speechiness': song_data['speechiness'],
                 'tempo': song_data['tempo']
-                # 다른 필드도 필요한 만큼 추가
             }
 
             return pd.DataFrame([song_data_dict])
@@ -231,12 +230,12 @@ def recommend_music():
         rec_songs = rec_songs[~rec_songs['name'].isin(song_dict['name'])]
         return rec_songs[metadata_cols].to_dict(orient='records')
 
-    song_list = [{'name': 'TROUBLESHOOTER'},
-                 {'name': 'AD MARE'},
-                 {'name': 'DOUBLAST'},
-                 {'name': 'Like'},
-                 {'name': 'Euphoria'}]
+    # song_list = [{'name': 'TROUBLESHOOTER'},
+    #              {'name': 'AD MARE'},
+    #              {'name': 'DOUBLAST'},
+    #              {'name': 'Like'},
+    #              {'name': 'Euphoria'}]
 
-    music_list = recommend_songs(song_list, data)
+    res = recommend_songs(song_list, data)
 
-    return music_list
+    return res
